@@ -54,7 +54,143 @@ Ostatné tabuľky datasetu
 Dataset obsahuje aj tabuľky s demografickými údajmi, vzdelaním a zručnosťami zamestnancov.
 V rámci tohto projektu nie sú použité a sú zobrazené iba v ERD pôvodnej dátovej štruktúry.
 
-### **1.1 Dátová architektúra**
+---
+### **1.6 Dátová architektúra**
 
 ### **ERD diagram**
+Surové dáta sú usporiadané v relačnom modeli, ktorý je znázornený na **entitno-relačnom diagrame (ERD)**:
+
+<p align="center">
+  <img src="https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/first.png" alt="ERD Schema">
+  <br>
+   <em>Obrázok 1 Entitno-relačná schéma Workforce Data Analytics</em>
+</p>
+
+---
+## **2. Dimenzionálny model**
+
+**Dimenzie:**
+
+- `company_dim`  
+- `time_dim`  
+- `layoffs_dim`  
+- `sentiment_dim`  
+
+Každá dimenzia je prepojená s faktovou tabuľkou pomocou cudzieho kľúča.
+
+### Popis dimenzií
+
+**company_dim**  
+Dimenzia spoločností obsahuje základné identifikačné a opisné údaje o firmách.  
+
+Atribúty:  
+- company_id (PK)  
+- COMPANY  
+- YEAR_FOUNDED  
+- TICKER  
+- NAICS_CODE  
+
+Vzťah k faktovej tabuľke:  
+`company_id -> company_id (1:N)`  
+
+Typ SCD: Typ 1 – zmeny atribútov sa prepisujú bez uchovávania histórie.
+
+---
+
+**time_dim**  
+Časová dimenzia na úrovni mesiaca, odvodená z dátumu prepúšťania.  
+
+Atribúty:  
+- time_id (PK, formát YYYYMM)  
+- date  
+- year  
+- month  
+
+Vzťah k faktovej tabuľke:  
+`time_id -> time_id (1:N)`  
+
+Typ SCD: Typ 0 – časová dimenzia je nemenná.
+
+---
+
+**layoffs_dim**  
+Dimenzia typu prepúšťania, ktorá kategorizuje udalosti layoffs.  
+
+Atribúty:  
+- layoff_id (PK)  
+- LAYOFF_TYPE  
+
+Vzťah k faktovej tabuľke:  
+`layoff_id -> layoff_id (1:N)`  
+
+Typ SCD: Typ 0 – hodnoty typu prepúšťania sa nemenia.
+
+---
+
+**sentiment_dim**  
+Dimenzia sentimentu zamestnancov viazaná na spoločnosť.  
+
+Atribúty:  
+- sentiment_id (PK)  
+- company_id (FK)  
+- MANAGEMENT_SENTIMENT  
+- WORK_LIFE_BALANCE_SENTIMENT  
+- CAREER_ADVANCEMENT_SENTIMENT  
+
+Vzťah k faktovej tabuľke:  
+`sentiment_id -> sentiment_id (1:N)`  
+
+Vzťah k company_dim:  
+`company_id -> company_id (1:1)`  
+
+Typ SCD: Typ 1 – sentiment hodnoty sú aktualizované bez historizácie.
+
+---
+
+**Faktová tabuľka:** `fact_workforce`
+
+### Popis faktovej tabuľky
+
+**fact_workforce**  
+Faktová tabuľka obsahuje udalosti prepúšťania a numerické metriky súvisiace s workforce dynamikou.  
+
+Primárny kľúč:  
+- fact_id  
+
+Cudzie kľúče:  
+- company_id  
+- time_id  
+- layoff_id  
+- sentiment_id  
+
+Hlavné metriky:  
+- NUM_EMPLOYEES – počet prepustených zamestnancov  
+- sentiment_rank – poradie sentimentu manažmentu v rámci spoločnosti  
+- previous_layoffs – počet prepustených zamestnancov pri predchádzajúcej udalosti
+
+---
+
+### Použité window functions
+
+Vo faktovej tabuľke sú použité povinné analytické funkcie:  
+- `ROW_NUMBER()` – generovanie primárneho kľúča fact_id  
+- `RANK()` – výpočet poradia sentimentu manažmentu v rámci spoločnosti  
+- `LAG()` – získanie hodnoty prepúšťania z predchádzajúcej udalosti
+
+### **1.2 Štruktúra hviezdicového modelu**
+Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
+
+<p align="center">
+  <img src="https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/second.png" alt="Star Schema">
+  <br>
+  <em>Obrázok 2 Schéma hviezdy pre Workforce Data Analytics</em>
+</p>
+
+
+---
+
+
+
+
+
 
