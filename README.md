@@ -8,31 +8,31 @@ Na identifikáciu spoločností sa používa univerzálny identifikátor RCID, k
 
 ### **1.1 Prečo bol zvolený tento dataset**
 Dataset Revelio Labs bol zvolený z nasledujúcich dôvodov:
-•	obsahuje realistické HR dáta využívané v reálnych biznis analytických scenároch,
-•	umožňuje analýzu prepúšťania, sentimentu a časových trendov,
-•	je vhodný na návrh dimenzionálneho modelu (Star Schema) a implementáciu ELT procesu.
+- obsahuje realistické HR dáta využívané v reálnych biznis analytických scenároch,
+-	umožňuje analýzu prepúšťania, sentimentu a časových trendov,
+-	je vhodný na návrh dimenzionálneho modelu (Star Schema) a implementáciu ELT procesu.
 
 ### **1.2 Biznis procesy podporované dátami**
 Dáta podporujú nasledujúce biznis procesy:
-•	strategické plánovanie pracovnej sily (Workforce Planning),
-•	HR analytiku a monitoring prepúšťania,
-•	analýzu vzťahu medzi sentimentom zamestnancov a manažérskymi rozhodnutiami,
-•	ESG a fundamentálnu analýzu spoločností z pohľadu ľudského kapitálu.
+-	strategické plánovanie pracovnej sily (Workforce Planning),
+-	HR analytiku a monitoring prepúšťania,
+-	analýzu vzťahu medzi sentimentom zamestnancov a manažérskymi rozhodnutiami,
+-	ESG a fundamentálnu analýzu spoločností z pohľadu ľudského kapitálu.
 
 ### **1.3 Typy dát v datasete**
 Dataset obsahuje tieto typy dát:
-•	identifikačné údaje (RCID, identifikátory spoločností),
-•	textové atribúty (názov spoločnosti, typ prepúšťania),
-•	numerické metriky (počet prepustených zamestnancov),
-•	časové údaje (dátum prepúšťania),
-•	sentiment metriky (management sentiment, work-life balance, career advancement).
+-	identifikačné údaje (RCID, identifikátory spoločností),
+-	textové atribúty (názov spoločnosti, typ prepúšťania),
+-	numerické metriky (počet prepustených zamestnancov),
+-	časové údaje (dátum prepúšťania),
+-	sentiment metriky (management sentiment, work-life balance, career advancement).
 
 ### **1.4 Zameranie analýzy**
 Analýza v rámci projektu je zameraná na:
-•	celkový počet prepustených zamestnancov,
-•	analýzu prepúšťania v časovom kontexte,
-•	porovnanie spoločností podľa rozsahu layoffs,
-•	skúmanie vzťahu medzi prepúšťaním a sentimentom zamestnancov.
+-	celkový počet prepustených zamestnancov,
+-	analýzu prepúšťania v časovom kontexte,
+-	porovnanie spoločností podľa rozsahu layoffs,
+-	skúmanie vzťahu medzi prepúšťaním a sentimentom zamestnancov.
 
 ### **1.5 Popis zdrojových tabuliek**
 `staging_company_mapping`
@@ -177,7 +177,7 @@ Vo faktovej tabuľke sú použité povinné analytické funkcie:
 - `RANK()` – výpočet poradia sentimentu manažmentu v rámci spoločnosti  
 - `LAG()` – získanie hodnoty prepúšťania z predchádzajúcej udalosti
 
-### **1.2 Štruktúra hviezdicového modelu**
+### **2.2 Štruktúra hviezdicového modelu**
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
 <p align="center">
@@ -186,8 +186,25 @@ Vo faktovej tabuľke sú použité povinné analytické funkcie:
   <em>Obrázok 2 Schéma hviezdy pre Workforce Data Analytics</em>
 </p>
 
+---
+## **3. ELT proces v Snowflake**
+### **3.1 Extract (Extrahovanie dát)**
+**Použité databázy**  
+Link na dataset: [Revelio Labs Workforce Data Analytics (Demo)](https://app.snowflake.com/marketplace/listing/GZT1Z2TPPWG4/revelio-labs-inc-workforce-data-analytics-demo?search=WORKFORCE_DATA_ANALYTICS__DEMO)
+
+#### Príklad kódu:
+````sql
+CREATE OR REPLACE TABLE staging_company_mapping AS
+SELECT * FROM WORKFORCE_DATA_ANALYTICS__DEMO.PUBLIC_SAMPLE.REVELIO_COMPANY_MAPPING;
+```
+Príkaz vytvára dočasnú tabuľku `staging_company_mapping` so všetkými údajmi z tabuľky `REVELIO_COMPANY_MAPPING` na ďalšie spracovanie v ELT procese.
 
 ---
+### **3.2 Load (Načítanie dát)**
+````sql
+
+```
+
 
 
 
