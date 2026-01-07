@@ -192,22 +192,108 @@ Vo faktovej tabuľke sú použité povinné analytické funkcie:
 **Použité databázy**  
 Link na dataset: [Revelio Labs Workforce Data Analytics (Demo)](https://app.snowflake.com/marketplace/listing/GZT1Z2TPPWG4/revelio-labs-inc-workforce-data-analytics-demo?search=WORKFORCE_DATA_ANALYTICS__DEMO)
 
+Na účely ďalšieho spracovania boli vytvorené staging tabuľky v databáze PELICAN_DB a schéme Zaverecny. Staging vrstva slúži kópia dát bez transformácií.
 #### Príklad kódu:
 ````sql
 CREATE OR REPLACE TABLE staging_company_mapping AS
 SELECT * FROM WORKFORCE_DATA_ANALYTICS__DEMO.PUBLIC_SAMPLE.REVELIO_COMPANY_MAPPING;
-```
+````
 Príkaz vytvára dočasnú tabuľku `staging_company_mapping` so všetkými údajmi z tabuľky `REVELIO_COMPANY_MAPPING` na ďalšie spracovanie v ELT procese.
+
+#### Príklad kódu:
+````sql
+DESCRIBE TABLE staging_company_mapping;
+````
+Slúži na zobrazenie štruktúry tabuľky
 
 ---
 ### **3.2 Load (Načítanie dát)**
+#### Príklad kódu:
 ````sql
+CREATE OR REPLACE TABLE company_dim AS
+SELECT
+    RCID AS company_id,
+    COMPANY,
+    YEAR_FOUNDED,
+    TICKER,
+    NAICS_CODE
+FROM staging_company_mapping;
+````
+Tento dotaz vytvára dimenziu `company_dim`:
+- Dáta berieme zo staging tabuľky `staging_company_mapping`.
+-	Vyberáme atribúty spoločnosti: `názov`, `rok založenia`, `ticker`, `priemyselný kód`.
+-	`RCID` premeníme na `company_id` — unikátny kľúč pre spojenie s faktami.
+- Tabuľka slúži ako dimension v Star Schema pre analytiku podľa spoločností.
 
-```
+---
+### **3.3 Transfor (Transformácia dát)**
+#### Príklad kódu:
+````sql
+CREATE OR REPLACE TABLE time_dim AS
+SELECT DISTINCT
+    TO_NUMBER(TO_CHAR(DATE_TRUNC('month', LAYOFF_DATE), 'YYYYMM')) AS time_id,
+    DATE_TRUNC('month', LAYOFF_DATE) AS date,
+    EXTRACT(YEAR FROM LAYOFF_DATE) AS year,
+    EXTRACT(MONTH FROM LAYOFF_DATE) AS month
+FROM staging_layoffs
+WHERE LAYOFF_DATE IS NOT NULL;
+````
+Tento kód vytvára časovú dimenziu `time_dim` s mesačnou granularitou:
+- `SELECT DISTINCT` - Zabezpečuje, že každý mesiac sa v tabuľke objaví iba jedenkrát.
+- `DATE_TRUNC` - Skracuje dátum na začiatok mesiaca.
+- `TO_CHAR` - funkcia ktorá konvertuje dátum alebo číslo na textový reťazec podľa zadaného formátu.
+- `O_NUMBER` - funkcia ktorá konvertuje textový reťazec alebo výraz na číselný typ.
+- `EXTRACT(YEAR FROM ...)` – funkcia, ktorá vyberá rok z dátumu.
+
+#### Príklad kódu:
+````sql
+CREATE OR REPLACE TABLE fact_workforce AS
+SELECT
+    ROW_NUMBER() OVER (ORDER BY l.LAYOFF_DATE) AS fact_id,
+    c.company_id,
+    t.time_id,
+    ld.layoff_id,
+    sd.sentiment_id,
+    l.NUM_EMPLOYEES,
+    RANK() OVER (
+        PARTITION BY c.company_id
+        ORDER BY COALESCE(sd.MANAGEMENT_SENTIMENT,0) DESC
+    ) AS sentiment_rank,
+    LAG(l.NUM_EMPLOYEES) OVER (
+        PARTITION BY c.company_id
+        ORDER BY l.LAYOFF_DATE
+    ) AS previous_layoffs
+FROM staging_layoffs l
+LEFT JOIN company_dim c
+    ON l.RCID = c.company_id
+LEFT JOIN time_dim t
+    ON TO_NUMBER(TO_CHAR(DATE_TRUNC('month', l.LAYOFF_DATE), 'YYYYMM')) = t.time_id
+LEFT JOIN layoffs_dim ld
+    ON l.LAYOFF_TYPE = ld.LAYOFF_TYPE
+LEFT JOIN sentiment_dim sd
+    ON c.company_id = sd.company_id;
+````
+Tento dotaz vytvára faktovú tabuľku fact_workforce pre Star Schema, kde sa spájajú dimenzie a metriky prepustení zamestnancov:
+- `ROW_NUMBER() OVER (ORDER BY l.LAYOFF_DATE) AS fact_id` - Priraďuje unikátny identifikátor každému faktu.
+- `RANK() ... AS sentiment_rank` - zoradenie spoločností podľa manažérskeho sentimentu.
+- `LAG(...) AS previous_layoffs` - počet prepustení v predchádzajúcom zázname pre rovnakú spoločnosť.
+  
+#### Príklad kódu:
+````sql
+SELECT * FROM Zaverecny.fact_workforce LIMIT 50;
+````
+Tento dotaz zobrazí prvých 50 riadkov faktovej tabuľky fact_workforce.
+Slúži na kontrolu dát po vytvorení tabuľky.
+
+#### Príklad kódu:
+````sql
+DROP TABLE IF EXISTS staging_layoffs;
+````
+Príkaz na zmazanie tabuľky z databázy.
+
+---
 
 
 
 
-
-
-
+  
