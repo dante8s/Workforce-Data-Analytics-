@@ -131,11 +131,11 @@ Typ SCD: Typ 0 – hodnoty typu prepúšťania sa nemenia.
 Dimenzia sentimentu zamestnancov viazaná na spoločnosť.  
 
 Atribúty:  
-- sentiment_id (PK)  
-- company_id (FK)  
+- sentiment_id (PK)   
 - MANAGEMENT_SENTIMENT  
 - WORK_LIFE_BALANCE_SENTIMENT  
-- CAREER_ADVANCEMENT_SENTIMENT  
+- CAREER_ADVANCEMENT_SENTIMENT
+- company_id 
 
 Vzťah k faktovej tabuľke:  
 `sentiment_id -> sentiment_id (1:N)`  
