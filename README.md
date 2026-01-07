@@ -139,10 +139,7 @@ Atribúty:
 
 Vzťah k faktovej tabuľke:  
 `sentiment_id -> sentiment_id (1:N)`  
-
-Vzťah k company_dim:  
-`company_id -> company_id (1:1)`  
-
+ 
 Typ SCD: Typ 1 – sentiment hodnoty sú aktualizované bez historizácie.
 
 ---
@@ -181,7 +178,7 @@ Vo faktovej tabuľke sú použité povinné analytické funkcie:
 Štruktúra hviezdicového modelu je znázornená na diagrame nižšie. Diagram ukazuje prepojenia medzi faktovou tabuľkou a dimenziami, čo zjednodušuje pochopenie a implementáciu modelu.
 
 <p align="center">
-  <img src="https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/second.png" alt="Star Schema">
+  <img src="https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/star.png" alt="Star Schema">
   <br>
   <em>Obrázok 2 Schéma hviezdy pre Workforce Data Analytics</em>
 </p>
