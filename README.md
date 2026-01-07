@@ -295,7 +295,7 @@ Príkaz na zmazanie tabuľky z databázy.
 
 ## **4 Vizualizácia dát**
 V tejto časti je predstavených 5 analytických dotazov a grafov, ktoré umožňujú vizualizovať dôležité metriky prepustení a sentimentu v spoločnostiach.
-### ** Graf 1: Zobrazuje spoločností podľa počtu prepustených zamestnancov**
+### **Graf 1: Zobrazuje spoločností podľa počtu prepustených zamestnancov**
 Táto vizualizácia zobrazuje spoločnosti podľa celkového počtu prepustených zamestnancov.
 Pomáha určiť, v ktorých spoločnostiach bolo prepúšťanie najmasovejšie.
 ````sql
@@ -310,7 +310,7 @@ GROUP BY c.COMPANY
 ORDER BY total_layoffs DESC;
 ````
 
-### ** Graf 2: Znázorňuje, ako sa počet prepúšťaní menil každý rok**
+### **Graf 2: Znázorňuje, ako sa počet prepúšťaní menil každý rok**
 Táto vizualizácia zobrazuje celkový počet prepustených zamestnancov za jednotlivé roky.
 Umožňuje identifikovať trendy v prepúšťaní v čase a zistiť, či počet prepustení rástol alebo klesal počas konkrétnych rokov.
 ````sql
@@ -325,7 +325,7 @@ GROUP BY t.year
 ORDER BY t.year;
 ````
 
-### ** Graf 3: Zobrazujúci hodnotenie spoločnosti**
+### **Graf 3: Zobrazujúci hodnotenie spoločnosti**
 Táto vizualizácia zobrazuje, ako sa spoločnosti líšia podľa hodnotenia sentimentu manažmentu.
 Umožňuje identifikovať spoločnosti s nízkym, priemerným alebo vysokým sentimentom,
 čo môže byť užitočné pre HR alebo analýzu pracovnej spokojnosti.
@@ -348,7 +348,7 @@ GROUP BY company_name, sentiment_group
 ORDER BY company_name, sentiment_group;
 ````
 
-### ** Graf 4: Znázorňuje štruktúru prepúšťaní podľa typu**
+### **Graf 4: Znázorňuje štruktúru prepúšťaní podľa typu**
 Táto vizualizácia zobrazuje, koľko zamestnancov bolo prepustených podľa typu prepustenia.
 Umožňuje identifikovať, ktoré typy prepustení sú najčastejšie a porovnať ich medzi sebou.
 ````sql
@@ -363,7 +363,7 @@ GROUP BY ld.LAYOFF_TYPE
 ORDER BY total_layoffs DESC;
 ````
 
-### ** Graf 5: Vzťah medzi počtom prepúšťaní a náladou manažmentu**
+### **Graf 5: Vzťah medzi počtom prepúšťaní a náladou manažmentu**
 Táto vizualizácia zobrazuje celkový počet prepustených zamestnancov a priemerný sentiment manažmentu pre každú spoločnosť.
 Umožňuje identifikovať spoločnosti, kde boli prepustenia najmasovejšie a zároveň analyzovať, aký bol sentiment manažmentu.
 ````sql
