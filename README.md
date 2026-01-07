@@ -293,6 +293,97 @@ Príkaz na zmazanie tabuľky z databázy.
 
 ---
 
+## **4 Vizualizácia dát**
+V tejto časti je predstavených 5 analytických dotazov a grafov, ktoré umožňujú vizualizovať dôležité metriky prepustení a sentimentu v spoločnostiach.
+### ** Graf 1: Zobrazuje spoločností podľa počtu prepustených zamestnancov**
+Táto vizualizácia zobrazuje spoločnosti podľa celkového počtu prepustených zamestnancov.
+Pomáha určiť, v ktorých spoločnostiach bolo prepúšťanie najmasovejšie.
+````sql
+USE WAREHOUSE PELICAN_WH;
+SELECT
+    c.COMPANY,
+    SUM(f.NUM_EMPLOYEES) AS total_layoffs
+FROM Zaverecny.fact_workforce f
+JOIN Zaverecny.company_dim c
+    ON f.company_id = c.company_id
+GROUP BY c.COMPANY
+ORDER BY total_layoffs DESC;
+````
+
+### ** Graf 2: Znázorňuje, ako sa počet prepúšťaní menil každý rok**
+Táto vizualizácia zobrazuje celkový počet prepustených zamestnancov za jednotlivé roky.
+Umožňuje identifikovať trendy v prepúšťaní v čase a zistiť, či počet prepustení rástol alebo klesal počas konkrétnych rokov.
+````sql
+USE WAREHOUSE PELICAN_WH;
+SELECT
+    t.year,
+    SUM(f.NUM_EMPLOYEES) AS total_layoffs
+FROM Zaverecny.fact_workforce f
+JOIN Zaverecny.time_dim t
+    ON f.time_id = t.time_id
+GROUP BY t.year
+ORDER BY t.year;
+````
+
+### ** Graf 3: Zobrazujúci hodnotenie spoločnosti**
+Táto vizualizácia zobrazuje, ako sa spoločnosti líšia podľa hodnotenia sentimentu manažmentu.
+Umožňuje identifikovať spoločnosti s nízkym, priemerným alebo vysokým sentimentom,
+čo môže byť užitočné pre HR alebo analýzu pracovnej spokojnosti.
+````sql
+USE WAREHOUSE PELICAN_WH;
+SELECT
+    c.COMPANY AS company_name,
+    CASE 
+        WHEN sd.MANAGEMENT_SENTIMENT <= -0.08 THEN 'nízky'
+        WHEN sd.MANAGEMENT_SENTIMENT <= -0.04 THEN 'priemerný'
+        ELSE 'vysoký'
+    END AS sentiment_group,
+    COUNT(*) AS num_records
+FROM Zaverecny.fact_workforce f
+JOIN Zaverecny.company_dim c
+    ON f.company_id = c.company_id
+JOIN Zaverecny.sentiment_dim sd
+    ON f.sentiment_id = sd.sentiment_id
+GROUP BY company_name, sentiment_group
+ORDER BY company_name, sentiment_group;
+````
+
+### ** Graf 4: Znázorňuje štruktúru prepúšťaní podľa typu**
+Táto vizualizácia zobrazuje, koľko zamestnancov bolo prepustených podľa typu prepustenia.
+Umožňuje identifikovať, ktoré typy prepustení sú najčastejšie a porovnať ich medzi sebou.
+````sql
+USE WAREHOUSE PELICAN_WH;
+SELECT
+    ld.LAYOFF_TYPE,
+    SUM(f.NUM_EMPLOYEES) AS total_layoffs
+FROM Zaverecny.fact_workforce f
+JOIN Zaverecny.layoffs_dim ld
+    ON f.layoff_id = ld.layoff_id
+GROUP BY ld.LAYOFF_TYPE
+ORDER BY total_layoffs DESC;
+````
+
+### ** Graf 5: Vzťah medzi počtom prepúšťaní a náladou manažmentu**
+Táto vizualizácia zobrazuje celkový počet prepustených zamestnancov a priemerný sentiment manažmentu pre každú spoločnosť.
+Umožňuje identifikovať spoločnosti, kde boli prepustenia najmasovejšie a zároveň analyzovať, aký bol sentiment manažmentu.
+````sql
+USE WAREHOUSE PELICAN_WH;
+SELECT
+    c.COMPANY AS company_name,
+    SUM(f.NUM_EMPLOYEES) AS total_layoffs,
+    AVG(sd.MANAGEMENT_SENTIMENT) AS avg_management
+FROM Zaverecny.fact_workforce f
+JOIN Zaverecny.company_dim c
+    ON f.company_id = c.company_id
+JOIN Zaverecny.sentiment_dim sd
+    ON f.sentiment_id = sd.sentiment_id
+GROUP BY c.COMPANY
+ORDER BY total_layoffs DESC;
+````
+---
+**Autor:** Dmytro Nesterenko
+
+
 
 
 
