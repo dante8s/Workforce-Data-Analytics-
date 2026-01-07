@@ -309,6 +309,9 @@ JOIN Zaverecny.company_dim c
 GROUP BY c.COMPANY
 ORDER BY total_layoffs DESC;
 ````
+<p align="center">
+  <img src="https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/1)Graf%20zobrazuje%20spolo%C4%8Dnost%C3%AD%20pod%C4%BEa%20po%C4%8Dtu%20prepusten%C3%BDch%20zamestnancov.png" alt="1.GRAF">
+</p>
 
 ### **Graf 2: Znázorňuje, ako sa počet prepúšťaní menil každý rok**
 Táto vizualizácia zobrazuje celkový počet prepustených zamestnancov za jednotlivé roky.
@@ -324,6 +327,9 @@ JOIN Zaverecny.time_dim t
 GROUP BY t.year
 ORDER BY t.year;
 ````
+<p align="center">
+  <img src="https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/2)Graf%20zn%C3%A1zor%C5%88uje%2C%20ako%20sa%20po%C4%8Det%20prep%C3%BA%C5%A1%C5%A5an%C3%AD%20menil%20ka%C5%BEd%C3%BD%20rok.png" alt="2.GRAF">
+</p>
 
 ### **Graf 3: Zobrazujúci hodnotenie spoločnosti**
 Táto vizualizácia zobrazuje, ako sa spoločnosti líšia podľa hodnotenia sentimentu manažmentu.
@@ -347,6 +353,9 @@ JOIN Zaverecny.sentiment_dim sd
 GROUP BY company_name, sentiment_group
 ORDER BY company_name, sentiment_group;
 ````
+<p align="center">
+  <img src="https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/3)Graf%20zobrazuj%C3%BAci%20hodnotenie%20spolo%C4%8Dnosti.png" alt="3.GRAF">
+</p>
 
 ### **Graf 4: Znázorňuje štruktúru prepúšťaní podľa typu**
 Táto vizualizácia zobrazuje, koľko zamestnancov bolo prepustených podľa typu prepustenia.
@@ -362,6 +371,9 @@ JOIN Zaverecny.layoffs_dim ld
 GROUP BY ld.LAYOFF_TYPE
 ORDER BY total_layoffs DESC;
 ````
+<p align="center">
+  <img src= "https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/4)Graf%20zn%C3%A1zor%C5%88uje%20%C5%A1trukt%C3%BAru%20prep%C3%BA%C5%A1%C5%A5an%C3%AD%20pod%C4%BEa%20typu.png" alt="4.GRAF">
+</p>
 
 ### **Graf 5: Vzťah medzi počtom prepúšťaní a náladou manažmentu**
 Táto vizualizácia zobrazuje celkový počet prepustených zamestnancov a priemerný sentiment manažmentu pre každú spoločnosť.
@@ -380,6 +392,10 @@ JOIN Zaverecny.sentiment_dim sd
 GROUP BY c.COMPANY
 ORDER BY total_layoffs DESC;
 ````
+<p align="center">
+  <img src= "https://github.com/dante8s/Workforce-Data-Analytics-/blob/main/img/5)Vz%C5%A5ah%20medzi%20po%C4%8Dtom%20prep%C3%BA%C5%A1%C5%A5an%C3%AD%20a%20n%C3%A1ladou%20mana%C5%BEmentu.png" alt="5.GRAF">
+</p>
+
 ---
 **Autor:** Dmytro Nesterenko
 
